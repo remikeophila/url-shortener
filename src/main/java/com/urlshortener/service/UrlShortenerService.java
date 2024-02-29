@@ -3,21 +3,22 @@ package com.urlshortener.service;
 import com.urlshortener.exception.NoDestinationUrlException;
 import com.urlshortener.model.ShortUrl;
 import com.urlshortener.repository.UrlShortenerRepository;
+import com.urlshortener.service.generator.ShortUrlGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigInteger;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
 @Service
 public class UrlShortenerService {
     private final UrlShortenerRepository urlShortenerRepository;
+    private final ShortUrlGenerator shortUrlGenerator;
 
     @Autowired
-    public UrlShortenerService(UrlShortenerRepository urlShortenerRepository) {
+    public UrlShortenerService(UrlShortenerRepository urlShortenerRepository, ShortUrlGenerator generateShortUrl) {
         this.urlShortenerRepository = urlShortenerRepository;
+        this.shortUrlGenerator = generateShortUrl;
     }
 
     public String shorten(String destinationUrl) throws NoSuchAlgorithmException {
@@ -26,7 +27,7 @@ public class UrlShortenerService {
             return existingShortUrl.get().getShortUrl();
         }
 
-        String shortenUrl = generateShortUrl(destinationUrl);
+        String shortenUrl = shortUrlGenerator.generate(destinationUrl);
 
         // Collision Management:
         // With current algorithm, if there are 1 200 000 unique shortened URLs in the database,
@@ -34,7 +35,7 @@ public class UrlShortenerService {
         int attempt = 0;
         Optional<ShortUrl> optionalShortUrl = urlShortenerRepository.findById(shortenUrl);
         while (optionalShortUrl.isPresent() && attempt < 10) {
-            shortenUrl = generateShortUrl(destinationUrl, attempt);
+            shortenUrl = shortUrlGenerator.generate(destinationUrl, attempt);
             optionalShortUrl = urlShortenerRepository.findById(shortenUrl);
             attempt++;
         }
@@ -55,17 +56,6 @@ public class UrlShortenerService {
                 .orElseThrow(NoDestinationUrlException::new);
     }
 
-    private static String generateShortUrl(String originalUrl) throws NoSuchAlgorithmException {
-        return generateShortUrl(originalUrl, 0);
-    }
 
-    private static String generateShortUrl(String originalUrl, int attempt) throws NoSuchAlgorithmException {
-        MessageDigest digest = MessageDigest.getInstance("MD5");
-        digest.reset();
-        digest.update((originalUrl + (attempt == 0? "": attempt)).getBytes());
-        byte[] hash = digest.digest();
-        BigInteger no = new BigInteger(1, hash);
-        return no.toString(16).substring(0, 10);
-    }
 
 }
