@@ -1,0 +1,26 @@
+# Dependencies
+/node_modules
+
+# Compiled output
+/dist
+/tmp
+/out-tsc
+
+# IDE and editor files
+/.idea
+*.sublime*
+*.swp
+*.swo
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Optional npm cache & logs
+.npm
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+.angular/
