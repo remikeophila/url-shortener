@@ -12,7 +12,8 @@ import { CommonModule, Location } from '@angular/common';
 export class HomeComponent {
   url: string = '';
   shortenedUrl: string = '';
-  isError:boolean = false;
+  urlError:boolean = false;
+  serverError:boolean = false;
   urlControl = new FormControl('', [Validators.required, this.urlValidator]);
 
 
@@ -20,19 +21,19 @@ export class HomeComponent {
 
   shortenUrl() {
     if(this.urlControl.valid) {
-      this.isError = false;
+      this.urlError = false;
     } else {
-      this.isError = true;
+      this.urlError = true;
       return;
     }
     if (this.url) {
       this.urlShortenerService.shortenUrl(this.url).subscribe({
         next: (response: any) => {
-          console.log("had a response: "+response.shortenedUrl);
+          this.serverError = false;
           this.shortenedUrl = response.shortenedUrl;
         },
         error: (error: any) => {
-          
+          this.serverError = true;
         }
       });
     }
