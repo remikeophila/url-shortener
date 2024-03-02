@@ -36,18 +36,18 @@ public class UrlShortenerControllerIT {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"url\":\"" + destinationUrl + "\"}"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(shortUrl));
+                .andExpect(content().string("{\"shortenedUrl\":\"" + shortUrl + "\"}"));
     }
 
     @Test
     public void whenGetURL_ShouldReturnTheCorrectURL() throws Exception {
-        String originalUrl = "www.google.com";
+        String destinationUrl = "www.google.com";
         String shortUrl = "a137b375cc";
 
-        given(urlShortenerService.getUrl(shortUrl)).willReturn(originalUrl);
+        given(urlShortenerService.getUrl(shortUrl)).willReturn(destinationUrl);
 
         mockMvc.perform(get("/{shortUrl}", shortUrl))
                 .andExpect(status().isOk())
-                .andExpect(content().string(originalUrl));
+                .andExpect(content().string("{\"destinationUrl\":\"" + destinationUrl + "\"}"));
     }
 }
