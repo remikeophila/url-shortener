@@ -54,6 +54,5 @@ To stop the containers, use `docker-compose down` in the terminal. This stops an
 
 ## Improvements
 * **Security**: Use JWT for secure API calls.
-* **URL Validation**: Improve URL validation on frontend and backend to ensure only valid URLs are shortened.
 * **Authenticated User**: For the user to retrieve saved links
 * **Custom Alias**: Allow users to define custom short URLs for better personalization, instead of relying on automatically generated ones
