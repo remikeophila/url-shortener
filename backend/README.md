@@ -11,11 +11,11 @@ docker-compose up
 ```
 
 ### Option 2: without Docker
-Ensure you have Node.js and Angular CLI installed.
+Ensure you have Maven installed.
 
 1. Install
 ```sh
-npm mvn clean install
+mvn clean install
 ```
 
 2. Serve the Application

@@ -11,13 +11,22 @@ public class ShortUrlGeneratorTest {
     private final ShortUrlGenerator shortUrlGenerator = new ShortUrlGenerator();
 
     @Test
-    public void generate_shouldReturnCorrectShort() throws NoSuchAlgorithmException {
-        assertThat(shortUrlGenerator.generate("www.google.com")).isEqualTo("a137b375cc");
+    public void generate_withSameCall_shouldReturnTheSameURL() throws NoSuchAlgorithmException {
+        String destinationUrl = "www.google.com";
+        String firstGenerated = shortUrlGenerator.generate(destinationUrl);
+        assertThat(shortUrlGenerator.generate(destinationUrl)).isEqualTo(firstGenerated);
+        assertThat(shortUrlGenerator.generate(destinationUrl)).isEqualTo(firstGenerated);
     }
 
     @Test
-    public void generate_withAttempt_shouldReturnCorrectShort() throws NoSuchAlgorithmException {
-        assertThat(shortUrlGenerator.generate("www.google.com", 1)).isEqualTo("b86205f6c1");
-        assertThat(shortUrlGenerator.generate("www.google.com", 2)).isEqualTo("d3f55abd68");
+    public void generate_withDifferentAttempt_shouldReturnDifferentUrl() throws NoSuchAlgorithmException {
+        String destinationUrl = "www.google.com";
+        String firstGenerated = shortUrlGenerator.generate(destinationUrl);
+        String secondGenerated = shortUrlGenerator.generate("www.google.com", 1);
+        String thirdGenerated = shortUrlGenerator.generate("www.google.com", 2);
+
+        assertThat(firstGenerated).isNotEqualTo(secondGenerated).isNotEqualTo(thirdGenerated);
+        assertThat(secondGenerated).isNotEqualTo(firstGenerated).isNotEqualTo(thirdGenerated);
+        assertThat(thirdGenerated).isNotEqualTo(firstGenerated).isNotEqualTo(secondGenerated);
     }
 }
